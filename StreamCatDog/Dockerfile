@@ -1,9 +1,8 @@
 # Use an official TensorFlow runtime as a parent image
 
 # FROM docker.io/tensorflow/tensorflow:nightly
-FROM http://docker.io/tensorflow/tensorflow:nightly
-
-# FROM tensorflow/tensorflow:latest
+FROM tensorflow/tensorflow:latest
+# FROM http://docker.io/tensorflow/tensorflow:nightly
 # FROM tensorflow/tensorflow:nightly
 # Set the working directory in the container
 WORKDIR /app
