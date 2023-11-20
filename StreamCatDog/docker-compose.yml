@@ -1,5 +1,5 @@
 services:
-  sentiment_app:
+  app:
     build: .
     ports:
-      - "8069:8080"
+      - "8051:8051"
