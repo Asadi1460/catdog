@@ -1,61 +1,33 @@
 # Use an official TensorFlow runtime as a parent image
+FROM python:3.9-slim
 
-# FROM docker.io/tensorflow/tensorflow:nightly
-FROM tensorflow/tensorflow:latest
-# FROM http://docker.io/tensorflow/tensorflow:nightly
-# FROM tensorflow/tensorflow:nightly
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install -r requirements.txt
+# Install build dependencies for numpy
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libblas-dev \
+    liblapack-dev \
+    libatlas-base-dev \
+    gfortran \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
+# Install required Python packages
+RUN pip install numpy==1.23.5 opencv-python tensorflow==2.12.0 streamlit==1.24.1
 
-# Run app.py when the container launches
-CMD ["python", "-m", "streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
+# Make port 8501 available to the world outside this container
+EXPOSE 8501
 
+# Run the Streamlit app when the container launches
+CMD ["python", "-m", "streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
 
-
-# FROM python:3.9-slim
-# # FROM tensorflow/tensorflow:nightly
-
-
-# WORKDIR /app
-
-# # RUN apt-get update && apt-get install -y ca-certificates\
-
-# RUN apt-get update && apt-get install -y \
-#     build-essential \
-#     curl \
-#     software-properties-common \
-#     git \
-#     && rm -rf /var/lib/apt/lists/*
-
-# COPY . .
-
-# # RUN pip3 install -r requirements.txt
-# RUN python -m pip install --trusted-host pypi.python.org --trusted-host pypi.org --trusted-host files.pythonhosted.org tensorflow
-
-# RUN python -m pip install -r requirements.txt
-
-# # RUN python -m pip install streamlit
-# # RUN python -m pip install opencv-python
-# # RUN python -m pip install tensorflow 
- 
-
-
-# # RUN pip3 install --trusted-host pypi.python.org --trusted-host pypi.org --trusted-host=files.pythonhosted.org -r requirements.txt
-
-
-# EXPOSE 8080
-
-# HEALTHCHECK CMD curl --fail http://localhost:8080/_stcore/health
-
-# ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
-
-# # ENTRYPOINT ["python", "-m", "streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]

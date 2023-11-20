@@ -8,8 +8,21 @@ from preprocess import *
 import streamlit as st
 # import emoji
 
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
+#from bs4 import BeautifulSoup
+#from urllib.request import urlopen
+
+# Set a Unicode font that supports Farsi characters
+st.markdown(
+    """
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 @st.cache_data
 def process_image(file_buffer):
@@ -33,7 +46,7 @@ model = tf.keras.models.load_model("ResNet.h5")
 
 
 def main():
-    st.title("Classify CAT 🐈 & Dog 🐩")
+    st.title("Classify CAT & Dog")
 
     # File uploader
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
