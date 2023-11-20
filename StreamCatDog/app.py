@@ -10,8 +10,7 @@ import streamlit as st
 #from bs4 import BeautifulSoup
 #from urllib.request import urlopen
 
-#@st.cache_data
-@st.cache
+@st.cache_data
 
 def process_image(file_buffer):
     # Convert the file buffer to a NumPy array
