@@ -26,8 +26,8 @@ RUN apt-get update && \
 RUN pip install numpy==1.23.5 opencv-python tensorflow==2.12.0 streamlit==1.24.1
 
 # Make port 8501 available to the world outside this contain 
-#EXPOSE 8501
+EXPOSE 8501
 
 # Run the Streamlit app when the container launches
-#CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
-CMD ["streamlit", "run", "app.py"]
+CMD ["python", "-m", "streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+#CMD ["streamlit", "run", "app.py"]
