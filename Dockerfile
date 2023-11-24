@@ -24,7 +24,7 @@ RUN apt-get update && \
 
 # Install required Python packages
 # RUN pip install numpy==1.23.5 opencv-python tensorflow==2.12.0 streamlit==1.24.1
-RUN pip install requirements.txt
+RUN pip3 install -r requirements.txt
 # Make port 8501 available to the world outside this contain 
 EXPOSE 8501
 
