@@ -1,0 +1,5 @@
+numpy==1.23.5
+opencv-python
+torch
+torchvision
+streamlit
