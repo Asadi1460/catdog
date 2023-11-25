@@ -29,4 +29,4 @@ RUN pip3 install -r requirementspytorch.txt
 EXPOSE 8501
 
 # Run the Streamlit app when the container launches
-CMD ["streamlit", "run", "apptorch.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+CMD ["python", "-m", "streamlit", "run", "apptorch.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
