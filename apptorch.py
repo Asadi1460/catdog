@@ -1,46 +1,54 @@
 import torch
 import torch.nn as nn
-import torchvision.transforms as transforms
+from torchvision import transforms
+from torchvision.models import resnet50
 from PIL import Image
 import streamlit as st
-import numpy as np
 
-# Define the model architecture. You'll need to replace this with your actual PyTorch model.
-class ResNetModel(nn.Module):
+# Define the model
+class DogCatClassifier(nn.Module):
     def __init__(self):
-        super(ResNetModel, self).__init__()
-        # Define your model layers here
+        super(DogCatClassifier, self).__init__()
+        self.resnet = resnet50(pretrained=True)
+        self.fc = nn.Linear(1000, 1)
 
     def forward(self, x):
-        # Define the forward pass
+        x = self.resnet(x)
+        x = self.fc(x)
         return x
 
-# Instantiate the model
-model = ResNetModel()
+# Load the pre-trained model
+model = DogCatClassifier()
+model.eval()
 
-# Image preprocessing using PyTorch transforms
+# Define transformations
 preprocess = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
 ])
 
-# Function to preprocess and predict the image
-@st.cache(allow_output_mutation=True)
-def predict_image_pyt(cv_image):
-    # Convert the NumPy image to a PyTorch tensor
-    torch_image = torch.tensor(cv_image / 255.0).permute(2, 0, 1).float()
+@st.cache
+def process_image(file_buffer):
+    # Convert the file buffer to a PIL Image
+    pil_image = Image.open(file_buffer).convert("RGB")
 
-    # Preprocess the image
-    preprocessed_image = preprocess(torch_image).unsqueeze(0)
+    # Apply transformations
+    tensor_image = preprocess(pil_image)
+    tensor_image = torch.unsqueeze(tensor_image, 0)
 
-    # Forward pass to get the prediction logits
-    prediction = model(preprocessed_image)
+    return tensor_image
 
-    # Convert logits to probabilities and get the predicted class
-    probabilities = torch.sigmoid(prediction)
-    predicted_class = 'dog' if probabilities[0, 0] > 0.5 else 'cat'
+# Display the image
+def imshow(pil_image, caption="Uploaded Image", use_column_width='auto'):
+    st.image(pil_image, caption=caption, use_column_width=use_column_width)
 
-    return predicted_class
+# Predict the image
+def predict_image(tensor_image):
+    with torch.no_grad():
+        prediction = torch.sigmoid(model(tensor_image))
+
+    predicted_class = 'dog' if prediction.item() > 0.5 else 'cat'
+    st.info(f'Predicted Class: {predicted_class}')
 
 def main():
     st.title("Classify CAT & Dog")
@@ -50,15 +58,12 @@ def main():
 
     if uploaded_file is not None:
         # Process the image
-        pil_image = Image.open(uploaded_file)
-        cv_image = np.array(pil_image)
+        tensor_image = process_image(uploaded_file)
 
-        # Display the original image
-        st.image(cv_image, caption="Uploaded Image", use_column_width='auto')
-
-        # Predict the image using PyTorch
-        predicted_class = predict_image_pyt(cv_image)
-        st.info(f'Predicted Class: {predicted_class}')
+        # Display the original image        
+        imshow(uploaded_file, caption="Uploaded Image")
+        # Predict the image
+        predict_image(tensor_image)
 
 if __name__ == "__main__":
     main()
