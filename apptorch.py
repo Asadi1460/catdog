@@ -27,7 +27,7 @@ preprocess = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-@st.cache
+@st.cache_data
 def process_image(file_buffer):
     # Convert the file buffer to a PIL Image
     pil_image = Image.open(file_buffer).convert("RGB")
