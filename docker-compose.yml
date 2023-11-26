@@ -1,5 +1,0 @@
-services:
-  app:
-    build: .
-    ports:
-      - "8051:8051"
